@@ -1,0 +1,87 @@
+<?php 
+    require_once 'connection.php';
+    $sql = "Select p.product_id,p.product_name,p.price,p.discount,p.product_image,c.qty from product p inner join cart c on c.product_id=p.product_name";
+    $sql2 = "select sum(p.price*c.qty) as total from product p inner join cart c on c.product_id=p.product_name ";
+    //$sql = "SELECT * FROM  product where product_name in (select product_id from cart)";
+    $all_product = $conn->query($sql);
+    $all_p = $conn->query($sql2);
+?>
+
+
+
+<!DOCTYPE html>
+<html lan="en">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equip="X-UA-Compatible" content="IE-edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" href="font/css/all.min.css">
+	<link rel="stylesheet" type="text/css" href="StyleSheet1.css">
+    <link rel="stylesheet" type="text/css" href="cart.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <title>In cart products </title>
+    <script src="Script1.js"></script>
+    <script src="database.js"></script>
+</head>
+<body>
+	<header>
+            <input type="checkbox" name="" id="toggler" style="display:none;">
+            <label for="toggler" class="fas fa-bars"></label>
+            <a href="#" class="logo"><img src="https://st2.depositphotos.com/6741230/11384/v/450/depositphotos_113843166-stock-illustration-flower-shop-logo-vector-illustration.jpg" class="logo"> </a>
+            <nav class="navbar">
+                <a href="home.php"> HOME </a>
+                <a href="#about"> ABOUT </a>
+                <a href="#products"> PRODUCTS </a>
+                <a href="#contact"> CONTACT </a>
+            </nav>
+            <div class="icons">
+                <a href="#" class="fas fa-heart"> </a>
+                <a href="cart.php" class="fas fa-shopping-cart"> </a>
+                <a href="#" class="fas fa-user"> </a>
+            </div>
+     </header>
+     <br><br><br> <br><br><br><br>
+     <main>
+        <h1>CART </h1>
+        <hr>
+        <?php
+                while($row= mysqli_fetch_assoc($all_product) ) {
+            ?>
+        <div class="card">
+            <div class="images"> 
+                <img src="<?php echo $row["product_image"]; ?>" alt=""> 
+            </div>
+   
+            <div class="caption">
+              
+                <p class="product_name"> <?php echo $row["product_name"]; ?> </p>
+                <p class="discount"><b><del> Rs<?php echo $row["discount"]; ?> </del> </b></p>
+                qty:<p class="qty"><?php echo $row["qty"]; ?> </p>
+                
+                <p class="price"><b> Rs.<?php echo $row["price"]; ?> </b></p>
+            
+
+                <!--<button class="remove"> Remove from cart </button>-->
+                <form action="connection.php" method="post">
+                               
+                        <input type="text" name="product_name" value="<?php echo $row["product_name"]; ?> " style="display:none;" >
+                                
+
+                    <input type="submit" name="del" value="Delete">
+                </form>
+
+            </div>
+        </div>
+        <?php
+                } 
+         ?>
+         <?php
+                while($tot=mysqli_fetch_assoc($all_p) ) {
+            ?>
+            Total Amount:<p class="total"><?php echo $tot["total"]; ?>
+          <?php
+                } 
+         ?>
+     </main>
+</body>
+</html>
